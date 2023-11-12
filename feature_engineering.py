@@ -100,7 +100,12 @@ df[(df["Fare"] < low) | (df["Fare"] > up)].head()
 
 df[(df["Fare"] < low) | (df["Fare"] > up)].index
 
-
+def check_outlier(dataframe, col_name):
+    low_limit, up_limit = outlier_thresholds(dataframe, col_name)
+    if dataframe[(dataframe[col_name] > up_limit) | (dataframe[col_name] < low_limit)].any(axis=None):
+        return True
+    else:
+        return False
 
 check_outlier(df, "Age")
 check_outlier(df, "Fare")
@@ -202,9 +207,6 @@ def grab_outliers(dataframe, col_name, index=False):
     if index:
         outlier_index = dataframe[((dataframe[col_name] < low) | (dataframe[col_name] > up))].index
         return outlier_index
-
-
-
 
 grab_outliers(df, "Age")
 
@@ -309,16 +311,6 @@ df = df.select_dtypes(include=['float64', 'int64'])
 df = df.dropna()
 df.head()
 df.shape
-
-def check_outlier(dataframe, col_name):
-    low_limit, up_limit = outlier_thresholds(dataframe, col_name)
-    if dataframe[(dataframe[col_name] > up_limit) | (dataframe[col_name] < low_limit)].any(axis=None):
-        return True
-    else:
-        return False
-
-
-
 for col in df.columns:
     print(col, check_outlier(df, col))
 
